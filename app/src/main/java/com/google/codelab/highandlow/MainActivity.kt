@@ -2,6 +2,7 @@ package com.google.codelab.highandlow
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +19,28 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val highBtn = findViewById<Button>(R.id.highBtn)
+        val lowBtn = findViewById<Button>(R.id.lowBtn)
+        val nextBtn = findViewById<Button>(R.id.nextBtn)
+
+        highBtn.setOnClickListener {
+            if (gameStart && !answered) {
+                highAndLow('h')
+            }
+        }
+
+        lowBtn.setOnClickListener {
+            if (gameStart && !answered) {
+                highAndLow('l')
+            }
+        }
+
+        nextBtn.setOnClickListener {
+            if (gameStart) {
+                drawCard()
+            }
+        }
     }
 
     override fun onResume() {
@@ -35,8 +58,39 @@ class MainActivity : AppCompatActivity() {
         drawCard()
     }
 
+    private fun highAndLow(answer: Char) {
+        showDroidCard()
+        answered = true
+
+        val hitText = findViewById<TextView>(R.id.hitText)
+        val loseText = findViewById<TextView>(R.id.loseText)
+        val resultText = findViewById<TextView>(R.id.resultText)
+        val balance = droidCard - yourCard
+
+        if (balance > 0 && answer == 'h') {
+            hitCount++
+            hitText.text = getString(R.string.hit_text) + hitCount
+        } else if (balance < 0 && answer == 'l') {
+            hitCount++
+            hitText.text = getString(R.string.hit_text) + hitCount
+        } else {
+            loseCount++
+            loseText.text = getString(R.string.lose_text) + loseCount
+        }
+        if (hitCount == 5) {
+            resultText.setText(R.string.your_win)
+        } else if (loseCount == 5) {
+            resultText.setText(R.string.your_lose)
+        }
+    }
+
     private fun drawCard() {
         val yourCardImage = findViewById<ImageView>(R.id.yourCardImage)
+        val droidCardImage = findViewById<ImageView>(R.id.droidCardImage)
+
+        yourCardImage.setImageResource(R.drawable.z01)
+        droidCardImage.setImageResource(R.drawable.z02)
+
         yourCard = (1..13).random()
         Log.d(tag, "You:$yourCard")
         when (yourCard) {
@@ -57,5 +111,24 @@ class MainActivity : AppCompatActivity() {
         droidCard = (1..13).random()
         Log.d(tag, "droid:$droidCard")
         answered = false
+    }
+
+    private fun showDroidCard() {
+        val droidCardImage = findViewById<ImageView>(R.id.droidCardImage)
+        when (droidCard) {
+            1 -> droidCardImage.setImageResource(R.drawable.c01)
+            2 -> droidCardImage.setImageResource(R.drawable.c02)
+            3 -> droidCardImage.setImageResource(R.drawable.c03)
+            4 -> droidCardImage.setImageResource(R.drawable.c04)
+            5 -> droidCardImage.setImageResource(R.drawable.c05)
+            6 -> droidCardImage.setImageResource(R.drawable.c06)
+            7 -> droidCardImage.setImageResource(R.drawable.c07)
+            8 -> droidCardImage.setImageResource(R.drawable.c08)
+            9 -> droidCardImage.setImageResource(R.drawable.c09)
+            10 -> droidCardImage.setImageResource(R.drawable.c10)
+            11 -> droidCardImage.setImageResource(R.drawable.c11)
+            12 -> droidCardImage.setImageResource(R.drawable.c12)
+            13 -> droidCardImage.setImageResource(R.drawable.c13)
+        }
     }
 }
